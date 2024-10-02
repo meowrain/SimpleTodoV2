@@ -1,28 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'package:todo_app/todolist/models/todo.dart';
+import 'package:todo_app/utils/initial_localdb.dart';
 
 class TodoDatabse with ChangeNotifier {
-  late Isar _isar;
-
-  // Initialize the database
-  static final TodoDatabse _instance = TodoDatabse._internal();
-
-  TodoDatabse._internal();
+  final Isar _isar = LocalDb().isar;
 
 // current Toods
   final List<Todo> currentTodos = [];
-
-  factory TodoDatabse() {
-    return _instance;
-  }
-
-  Future<void> initialize() async {
-    final dir = await getApplicationDocumentsDirectory();
-    _isar = await Isar.open([TodoSchema], directory: dir.path);
-  }
 
   // create
   Future<void> addTodo(String task) async {
@@ -51,7 +36,7 @@ class TodoDatabse with ChangeNotifier {
     final Todo? todoToBeUpdated = await _isar.todos.get(id);
     if (todoToBeUpdated != null) {
       if (newTask == null) {
-        todoToBeUpdated..completed = completed;
+        todoToBeUpdated.completed = completed;
       } else {
         todoToBeUpdated
           ..completed = completed
@@ -69,8 +54,7 @@ class TodoDatabse with ChangeNotifier {
     final Todo? todoToBeDeleted = await _isar.todos.get(id);
     if (todoToBeDeleted != null) {
       await _isar.writeTxn(() async {
-        final success = await _isar.todos.delete(id);
-        print('Recipe deleted: $success');
+        await _isar.todos.delete(id);
         await fetchTodos();
       });
     }

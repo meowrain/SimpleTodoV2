@@ -88,7 +88,7 @@ class _SettingsState extends State<Settings> {
             value: themeProvider.isDarkMode(context),
             onChanged: (bool value) {
               setState(() {
-                themeProvider.toggleTheme(value);
+                themeProvider.toggleTheme(value, context);
               });
             },
           ),

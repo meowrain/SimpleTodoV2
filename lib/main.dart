@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_app/home/home.dart';
 import 'package:todo_app/theme/themeProvider.dart';
-import 'package:todo_app/todolist/models/todo_databse.dart';
+import 'package:todo_app/todolist/db/todo_databse.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:todo_app/utils/initial_localdb.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -13,7 +14,7 @@ void main() async {
   // 确保Flutter绑定已初始化
   WidgetsFlutterBinding.ensureInitialized();
   // 初始化Todo数据库
-  await TodoDatabse().initialize();
+  await LocalDb().initialize();
   // 运行应用程序，使用MultiProvider来提供依赖
   runApp(MultiProvider(
     providers: [

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_app/components/dialog_box.dart';
 import 'package:todo_app/todolist/models/todo.dart';
-import 'package:todo_app/todolist/models/todo_databse.dart';
+import 'package:todo_app/todolist/db/todo_databse.dart';
 import 'package:todo_app/todolist/todotile.dart';
 
 class TodoList extends StatefulWidget {
@@ -29,8 +29,8 @@ class _TodoListState extends State<TodoList> {
         context.read<TodoDatabse>().addTodo(text!);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
+          const SnackBar(
+            content: Text(
               "不可以添加空的Todo",
               style: TextStyle(
                 color: Colors.white,
@@ -39,7 +39,7 @@ class _TodoListState extends State<TodoList> {
             ),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
+            duration: Duration(seconds: 2),
           ),
         );
       }
