@@ -1,5 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/about/about.dart';
+import 'package:todo_app/privacy_policy/privacy_policy.dart';
 import 'package:todo_app/theme/themeProvider.dart';
 import 'package:todo_app/user/profile.dart';
 import 'package:provider/provider.dart';
@@ -52,8 +54,10 @@ class _SettingsState extends State<Settings> {
             title: const Text('Account'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => PersonalProfile()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PersonalProfile()));
               // Navigate to account settings
             },
           ),
@@ -62,7 +66,10 @@ class _SettingsState extends State<Settings> {
             title: const Text('Privacy'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              // Navigate to privacy settings
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PrivacyPolicyPage()));
             },
           ),
           SwitchListTile(
@@ -90,7 +97,9 @@ class _SettingsState extends State<Settings> {
             title: const Text('About'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              // Navigate to about page
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const About();
+              }));
             },
           ),
         ],

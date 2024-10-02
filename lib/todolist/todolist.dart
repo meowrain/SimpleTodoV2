@@ -28,7 +28,20 @@ class _TodoListState extends State<TodoList> {
       if (text != "") {
         context.read<TodoDatabse>().addTodo(text!);
       } else {
-        toastification.show(description: const Text("不可以添加空的Todo"));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              "不可以添加空的Todo",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
       }
     });
   }
@@ -59,6 +72,7 @@ class _TodoListState extends State<TodoList> {
   void _deleteFromTheTask(int id) {
     setState(() {
       context.read<TodoDatabse>().DeleteTodo(id);
+      toastification.show(description: const Text("Todo已删除"));
     });
   }
 
