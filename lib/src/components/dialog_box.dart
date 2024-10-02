@@ -11,7 +11,7 @@ class DialogBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Container(
+      content: SizedBox(
         height: 120,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -20,18 +20,18 @@ class DialogBox extends StatelessWidget {
             TextField(
               controller: controller,
               decoration: const InputDecoration(
-                label: Text("Add Todo"),
+                label: Text("添加Todo"),
                 border: OutlineInputBorder(),
-                hintText: "Add a new Todo",
+                hintText: "添加一个新的待办事项",
               ),
             ),
             Row(
               children: [
-                TodoButton(onPressed: onSave ?? () {}, text: "Add"),
+                TodoButton(onPressed: onSave ?? () {}, text: "添加"),
                 const SizedBox(
                   width: 8,
                 ),
-                TodoButton(onPressed: onCancel ?? () {}, text: "Cancel")
+                TodoButton(onPressed: onCancel ?? () {}, text: "取消")
               ],
             )
           ],
