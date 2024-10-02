@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:todo_app/components/dialog_box.dart';
-import 'package:todo_app/todolist/models/todo.dart';
-import 'package:todo_app/todolist/db/todo_databse.dart';
-import 'package:todo_app/todolist/todotile.dart';
+import 'package:todo_app/src/components/dialog_box.dart';
+import 'package:todo_app/src/models/todo/todo.dart';
+import 'package:todo_app/src/db/todo_databse.dart';
+import 'package:todo_app/src/providers/todoProvider.dart';
+import 'package:todo_app/src/views/todotile/todotile.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -18,15 +19,14 @@ class _TodoListState extends State<TodoList> {
 
   void _checkBoxChanged(bool? value, int id) {
     setState(() {
-      context.read<TodoDatabse>().UpdateTodo(id, null, value ?? false);
-      // [index]['completed'] = value ?? false;
+      context.read<Todoprovider>().updateTodoProvider(id, null, value ?? false);
     });
   }
 
   void _saveTodoToTodoList(String? text) {
     setState(() {
       if (text != "") {
-        context.read<TodoDatabse>().addTodo(text!);
+        context.read<Todoprovider>().addTodoProvider(text!);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -47,7 +47,7 @@ class _TodoListState extends State<TodoList> {
   }
 
   void readTasksFromDatabase() {
-    context.watch<TodoDatabse>().fetchTodos();
+    context.watch<Todoprovider>().fetchTodoProvider();
   }
 
   void _createNewTask() {
@@ -71,16 +71,16 @@ class _TodoListState extends State<TodoList> {
 
   void _deleteFromTheTask(int id) {
     setState(() {
-      context.read<TodoDatabse>().DeleteTodo(id);
+      context.read<Todoprovider>().deleteTodoProvider(id);
       toastification.show(description: const Text("Todo已删除"));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final todoDatabase = context.watch<TodoDatabse>();
-    List<Todo> currentTodos = todoDatabase.currentTodos;
-    todoDatabase.fetchTodos();
+    final todoProvider = context.watch<Todoprovider>();
+    List<Todo> currentTodos = todoProvider.currentTodos;
+    todoProvider.fetchTodoProvider();
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         floatingActionButton: FloatingActionButton(

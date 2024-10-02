@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/user/profile.dart';
-import 'package:todo_app/settings/settings.dart';
-import 'package:todo_app/todolist/todolist.dart';
+import 'package:todo_app/src/views/user/profile.dart';
+import 'package:todo_app/src/views/settings/settings.dart';
+import 'package:todo_app/src/views/todolist/todolist.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

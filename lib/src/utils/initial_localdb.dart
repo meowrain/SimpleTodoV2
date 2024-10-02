@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:todo_app/theme/models/theme.dart';
-import 'package:todo_app/todolist/models/todo.dart';
+import 'package:todo_app/src/models/theme/theme.dart';
+import 'package:todo_app/src/models/todo/todo.dart';
 
 class LocalDb {
   late Isar _isar;

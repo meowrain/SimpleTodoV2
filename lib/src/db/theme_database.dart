@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
-import 'package:todo_app/theme/models/theme.dart';
-import 'package:todo_app/utils/initial_localdb.dart';
+import 'package:todo_app/src/models/theme/theme.dart';
+import 'package:todo_app/src/utils/initial_localdb.dart';
 
 class Themedatabase {
   final Isar _isar = LocalDb().isar;

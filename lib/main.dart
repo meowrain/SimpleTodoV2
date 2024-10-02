@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
-import 'package:todo_app/home/home.dart';
-import 'package:todo_app/theme/themeProvider.dart';
-import 'package:todo_app/todolist/db/todo_databse.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:todo_app/utils/initial_localdb.dart';
+import 'package:todo_app/src/providers/todoProvider.dart';
+import 'package:todo_app/src/theme/theme_manager.dart';
+import 'package:todo_app/src/views/home/home.dart';
+import 'package:todo_app/src/providers/themeProvider.dart';
+import 'package:todo_app/src/utils/initial_localdb.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -19,7 +18,7 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       // 提供TodoDatabase实例
-      ChangeNotifierProvider<TodoDatabse>(create: (_) => TodoDatabse()),
+      ChangeNotifierProvider<Todoprovider>(create: (_) => Todoprovider()),
       // 提供ThemeProvider实例
       ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
     ],
@@ -41,37 +40,8 @@ class TodoApp extends StatelessWidget {
             // 禁用调试模式下的检查模式横幅
             debugShowCheckedModeBanner: false,
             home: const HomePage(),
-            theme: FlexThemeData.light(
-              scheme: FlexScheme.materialBaseline,
-              surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-              blendLevel: 7,
-              subThemesData: const FlexSubThemesData(
-                blendOnLevel: 10,
-                blendOnColors: false,
-                useM2StyleDividerInM3: true,
-              ),
-              visualDensity: FlexColorScheme.comfortablePlatformDensity,
-              useMaterial3: true,
-              swapLegacyOnMaterial3: true,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              // To use the playground font, add GoogleFonts package and uncomment
-              // fontFamily: GoogleFonts.notoSans().fontFamily,
-            ),
-            darkTheme: FlexThemeData.dark(
-              scheme: FlexScheme.materialBaseline,
-              surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
-              blendLevel: 13,
-              subThemesData: const FlexSubThemesData(
-                blendOnLevel: 20,
-                useM2StyleDividerInM3: true,
-              ),
-              visualDensity: FlexColorScheme.comfortablePlatformDensity,
-              useMaterial3: true,
-              swapLegacyOnMaterial3: true,
-              fontFamily: GoogleFonts.notoSans().fontFamily,
-              // To use the Playground font, add GoogleFonts package and uncomment
-              // fontFamily: GoogleFonts.notoSans().fontFamily,
-            ),
+            theme: ThemeManager.LightTheme.midnight,
+            darkTheme: ThemeManager.DarkTheme.midnight,
             themeMode: themeProvider.themeMode,
           );
         },

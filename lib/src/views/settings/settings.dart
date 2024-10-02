@@ -1,9 +1,9 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_app/about/about.dart';
-import 'package:todo_app/privacy_policy/privacy_policy.dart';
-import 'package:todo_app/theme/themeProvider.dart';
-import 'package:todo_app/user/profile.dart';
+import 'package:todo_app/src/views/about/about.dart';
+import 'package:todo_app/src/views/privacy_policy/privacy_policy.dart';
+import 'package:todo_app/src/providers/themeProvider.dart';
+import 'package:todo_app/src/views/user/profile.dart';
 import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {

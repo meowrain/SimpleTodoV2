@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/theme/db/theme_database.dart';
+import 'package:todo_app/src/db/theme_database.dart';
 
 class ThemeProvider with ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
@@ -11,7 +11,6 @@ class ThemeProvider with ChangeNotifier {
   Future<void> _loadThemeFromDatabase() async {
     String? themeFromDatabase = await _themedatabase.fetchThemeFromDB();
     if (themeFromDatabase != null) {
-      print(themeFromDatabase);
       _themeMode =
           themeFromDatabase == 'dark' ? ThemeMode.dark : ThemeMode.light;
     }
