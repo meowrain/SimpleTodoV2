@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
+import 'package:todo_app/config/config_init.dart';
 import 'package:todo_app/src/providers/todoProvider.dart';
+import 'package:todo_app/src/providers/userinfoProvider.dart';
 import 'package:todo_app/src/theme/theme_manager.dart';
 import 'package:todo_app/src/views/home/home.dart';
 import 'package:todo_app/src/providers/themeProvider.dart';
@@ -14,6 +16,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // 初始化Todo数据库
   await LocalDb().initialize();
+  //初始化配置管理器，调用init函数
+  await ConfigManager().init();
   // 运行应用程序，使用MultiProvider来提供依赖
   runApp(MultiProvider(
     providers: [
@@ -21,6 +25,9 @@ void main() async {
       ChangeNotifierProvider<Todoprovider>(create: (_) => Todoprovider()),
       // 提供ThemeProvider实例
       ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+      //提供UserInfoProvider实例
+      ChangeNotifierProvider<UserInfoProvider>(
+          create: (_) => UserInfoProvider())
     ],
     // TodoApp作为子部件
     child: const TodoApp(),

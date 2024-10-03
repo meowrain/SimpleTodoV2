@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/src/providers/userinfoProvider.dart';
 import 'package:todo_app/src/views/about/about.dart';
 import 'package:todo_app/src/views/privacy_policy/privacy_policy.dart';
 import 'package:todo_app/src/providers/themeProvider.dart';
@@ -15,10 +16,29 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool _notificationsEnabled = true;
+  // 每次打开的时候调用一次，更新userInfoProvider全局状态
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  void _loadUserInfo() async {
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    await userInfoProvider.fetchUserInfoProvider();
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final userInfoProvider = Provider.of<UserInfoProvider>(context);
+
+    // 从 userInfoProvider 提取 userInfo,如果为空，就返回？？后面的
+    final username = userInfoProvider.userInfo?.username ?? "未登录";
+    final avatar = userInfoProvider.userInfo?.avatar ?? '';
+    final email = userInfoProvider.userInfo?.email ?? '';
+
     return Scaffold(
       body: ListView(
         children: [
@@ -28,42 +48,41 @@ class _SettingsState extends State<Settings> {
               children: [
                 Container(
                   padding: const EdgeInsets.all(16.0),
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: const NetworkImage(
-                        'https://meowrain.cn/upload/2024/06/IMG_20240511_124707_183.jpg'),
-                    onBackgroundImageError: (error, stackTrace) {
-                      // Handle image loading error
-                      print('Image loading error: $error');
-                    },
-                  ),
+                  child: avatar.isNotEmpty
+                      ? CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(avatar),
+                          onBackgroundImageError: (error, stackTrace) {
+                            // Handle image loading error
+                            print('Image loading error: $error');
+                          },
+                        )
+                      : Icon(size: 100.0, FluentIcons.person_circle_28_regular),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(bottom: 16.0),
                   child: Text(
-                    'MeowRain',
+                    username,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
             ),
           ),
-          // const Divider(),
           ListTile(
             leading: const Icon(FluentIcons.person_24_regular),
-            title: const Text('Account'),
+            title: const Text('账户'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const PersonalProfile()));
-              // Navigate to account settings
             },
           ),
           ListTile(
             leading: const Icon(FluentIcons.lock_closed_24_regular),
-            title: const Text('Privacy'),
+            title: const Text('隐私'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.push(
@@ -74,7 +93,7 @@ class _SettingsState extends State<Settings> {
           ),
           SwitchListTile(
             secondary: const Icon(FluentIcons.alert_24_regular),
-            title: const Text('Notifications'),
+            title: const Text('通知'),
             value: _notificationsEnabled,
             onChanged: (bool value) {
               setState(() {
@@ -84,7 +103,7 @@ class _SettingsState extends State<Settings> {
           ),
           SwitchListTile(
             secondary: const Icon(FluentIcons.dark_theme_24_regular),
-            title: const Text('Dark Mode'),
+            title: const Text('夜间模式'),
             value: themeProvider.isDarkMode(context),
             onChanged: (bool value) {
               setState(() {
@@ -94,7 +113,7 @@ class _SettingsState extends State<Settings> {
           ),
           ListTile(
             leading: const Icon(FluentIcons.info_24_regular),
-            title: const Text('About'),
+            title: const Text('关于'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
