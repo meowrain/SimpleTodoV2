@@ -15,9 +15,6 @@ class _PersonalProfileState extends State<PersonalProfile> {
   final TextEditingController _phoneController =
       TextEditingController(text: '+1234567890');
 
-  // 标志位用于指示是否处于编辑模式
-  bool _isEditing = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

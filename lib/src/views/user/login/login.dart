@@ -1,5 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/api/user/user_api.dart';
+import 'package:todo_app/src/views/user/register/register.dart';
 
 class UserLogin extends StatefulWidget {
   const UserLogin({super.key});
@@ -9,6 +11,43 @@ class UserLogin extends StatefulWidget {
 }
 
 class _UserLoginState extends State<UserLogin> {
+  final TextEditingController _username_controller = TextEditingController();
+  final TextEditingController _password_controller = TextEditingController();
+  void _loginHandler() async {
+    bool isSuccess = await login(
+        username: _username_controller.text,
+        password: _password_controller.text);
+    if (isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "登录成功！",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+      //TODO: 跳出路由
+      // Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "登录失败",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,10 +77,11 @@ class _UserLoginState extends State<UserLogin> {
                 const SizedBox(
                   height: 25,
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: _username_controller,
+                    decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                             borderSide: BorderSide()),
@@ -51,10 +91,11 @@ class _UserLoginState extends State<UserLogin> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: _password_controller,
+                    decoration: const InputDecoration(
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                             borderSide: BorderSide()),
@@ -65,16 +106,24 @@ class _UserLoginState extends State<UserLogin> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text("注册"),
-                      SizedBox(
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const UserRegister()));
+                          },
+                          child: Text("注册")),
+                      const SizedBox(
                         width: 10,
                       ),
-                      Text("忘记密码？"),
+                      const Text("忘记密码？"),
                     ],
                   ),
                 ),
@@ -87,7 +136,9 @@ class _UserLoginState extends State<UserLogin> {
                     width: double.infinity,
                     height: 50, // 设置适中的高度
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _loginHandler();
+                      },
                       child: const Text(
                         "登录",
                         style: TextStyle(fontSize: 17), // 文字大一点儿
@@ -101,5 +152,13 @@ class _UserLoginState extends State<UserLogin> {
         ),
       ),
     );
+  }
+
+//释放资源，防止内存泄漏
+  @override
+  void dispose() {
+    _username_controller.dispose();
+    _password_controller.dispose();
+    super.dispose();
   }
 }
