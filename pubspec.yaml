@@ -52,6 +52,10 @@ dependencies:
   fluentui_system_icons: ^1.1.258
   flex_color_scheme: ^7.3.1
   google_fonts: ^6.2.1
+  http: ^1.2.2
+  yaml: ^3.1.2
+  logger: ^2.4.0
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +87,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/user.jpg
+    - assets/config/config.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
