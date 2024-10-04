@@ -43,4 +43,9 @@ class ApiUserModel {
       'birthday': birthday,
     };
   }
+
+  @override
+  String toString() {
+    return 'ApiUserModel{id: $id, username: $username, avatar: $avatar, bio: $bio, email: $email, phoneNumber: $phoneNumber, gender: $gender, birthday: $birthday}';
+  }
 }

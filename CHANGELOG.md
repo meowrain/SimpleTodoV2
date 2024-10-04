@@ -1,6 +1,9 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+### Feat
+- 添加changelog
+
 
 <a name="v0.1"></a>
 ## v0.1 - 2024-10-04

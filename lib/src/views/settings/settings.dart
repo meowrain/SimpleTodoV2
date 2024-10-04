@@ -37,7 +37,7 @@ class _SettingsState extends State<Settings> {
     // 从 userInfoProvider 提取 userInfo,如果为空，就返回？？后面的
     final username = userInfoProvider.userInfo?.username ?? "未登录";
     final avatar = userInfoProvider.userInfo?.avatar ?? '';
-    final email = userInfoProvider.userInfo?.email ?? '';
+    final bio = userInfoProvider.userInfo?.bio ?? '';
 
     return Scaffold(
       body: ListView(
@@ -61,9 +61,17 @@ class _SettingsState extends State<Settings> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 16.0),
-                  child: Text(
-                    username,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  child: Column(
+                    children: [
+                      Text(
+                        username,
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      Text(bio,
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.normal))
+                    ],
                   ),
                 ),
               ],
@@ -77,7 +85,7 @@ class _SettingsState extends State<Settings> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const PersonalProfile()));
+                      builder: (context) => const PersonalPageDemo()));
             },
           ),
           ListTile(

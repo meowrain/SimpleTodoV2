@@ -1,152 +1,201 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/src/providers/userinfoProvider.dart';
 
-// 定义一个有状态的组件 PersonalProfile，用于显示和编辑个人信息
-class PersonalProfile extends StatefulWidget {
-  const PersonalProfile({super.key});
+class PersonalPageDemo extends StatefulWidget {
+  const PersonalPageDemo({super.key});
 
   @override
-  State<PersonalProfile> createState() => _PersonalProfileState();
+  State<PersonalPageDemo> createState() => _PersonalPageDemoState();
 }
 
-class _PersonalProfileState extends State<PersonalProfile> {
-  // 控制器用于管理文本字段的内容
-  final TextEditingController _emailController =
-      TextEditingController(text: 'user@example.com');
-  final TextEditingController _phoneController =
-      TextEditingController(text: '+1234567890');
+class _PersonalPageDemoState extends State<PersonalPageDemo> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController =
+      TextEditingController(text: "*************");
+  final TextEditingController _birthdayController = TextEditingController();
+  String? _selectedGender;
+  bool _isEditing = false; // 控制是否处于编辑模式
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  void _loadUserInfo() async {
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    await userInfoProvider.fetchUserInfoProvider();
+    setState(() {
+      _emailController.text = userInfoProvider.userInfo!.email;
+      _phoneController.text = userInfoProvider.userInfo!.phoneNumber;
+      _usernameController.text = userInfoProvider.userInfo!.username;
+      _birthdayController.text = userInfoProvider.userInfo!.birthday;
+      _selectedGender = userInfoProvider.userInfo!.gender;
+    });
+  }
+
+  void _saveUserInfo() {
+    //数据库操作
+
+    setState(() {
+      _isEditing = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final userInfoProvider = Provider.of<UserInfoProvider>(context);
+    final userInfo = userInfoProvider.userInfo;
+    final username = userInfo?.username ?? "";
+    final avatar = userInfo?.avatar ?? "";
+    final bio = userInfo?.bio ?? "";
     return Scaffold(
       appBar: AppBar(
-        title: const Text("个人信息"),
+        title: const Text("个人主页"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 显示用户头像
-            const Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage:
-                    AssetImage('assets/images/user.jpg'), // 你可以替换成用户的头像
-              ),
-            ),
-            const SizedBox(height: 20),
-            // 显示用户名
-            const Center(
-              child: Text(
-                '用户名',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Center(
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(avatar),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // 显示邮箱信息
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: '邮箱',
-              ),
-              enabled: false, // 禁用编辑
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 10),
-            // 显示电话信息
-            TextField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: '电话',
-              ),
-              enabled: false, // 禁用编辑
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 20),
-            // 编辑按钮，点击后弹出编辑对话框
-            Center(
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    _showEditDialog();
-                  },
-                  child: const Text(
-                    '编辑个人信息',
-                    style: TextStyle(fontSize: 16),
+                const SizedBox(height: 10),
+                Text(
+                  username,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                Text(bio,
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.normal)),
+                // 添加边距
+                const SizedBox(height: 20),
+                _buildTextInputField(
+                    label: "用户名:", controller: _usernameController),
+                const SizedBox(height: 10),
+                _buildTextInputField(
+                    label: "密码:",
+                    controller: _passwordController,
+                    isPassword: true),
+                const SizedBox(height: 10),
+                _buildTextInputField(
+                    label: "邮箱:", controller: _emailController),
+                const SizedBox(height: 10),
+                _buildGenderSelector(),
+                const SizedBox(
+                  height: 20,
+                ),
+                _buildTextInputField(
+                    label: "电话:", controller: _phoneController),
+                const SizedBox(height: 10),
+                _buildTextInputField(
+                    label: "生日:", controller: _birthdayController),
+                const SizedBox(height: 20),
+                // 添加 编辑 & 保存按钮
+                SizedBox(
+                  width: double.infinity, // 使按钮占据整个宽度
+                  child: ElevatedButton(
+                    onPressed: _isEditing
+                        ? _saveUserInfo
+                        : () {
+                            setState(() {
+                              _isEditing = true; // 切换到编辑模式
+                            });
+                          },
+                    child: Text(_isEditing ? '保存' : '编辑'),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  // 显示编辑对话框的方法
-  void _showEditDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // 创建新的控制器用于编辑
-        final TextEditingController _editEmailController =
-            TextEditingController(text: _emailController.text);
-        final TextEditingController _editPhoneController =
-            TextEditingController(text: _phoneController.text);
-
-        return AlertDialog(
-          title: const Text('编辑个人信息'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 编辑邮箱
-              TextField(
-                controller: _editEmailController,
-                decoration: const InputDecoration(
-                  labelText: '邮箱',
-                ),
-              ),
-              const SizedBox(height: 10),
-              // 编辑电话
-              TextField(
-                controller: _editPhoneController,
-                decoration: const InputDecoration(
-                  labelText: '电话',
-                ),
-              ),
-            ],
+  Widget _buildTextInputField({
+    required String label,
+    required TextEditingController controller,
+    bool isPassword = false,
+  }) {
+    return Row(
+      children: [
+        Text(
+          '$label ',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        // TextField 文字框
+        Expanded(
+          child: TextField(
+            controller: controller,
+            enabled: _isEditing,
+            obscureText: isPassword, // 如果是密码，输入新密码的时候会变成*号
+            style: const TextStyle(fontSize: 18),
           ),
-          actions: [
-            // 取消按钮，关闭对话框
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('取消'),
+        ),
+      ],
+    );
+  }
+
+  // 创建性别选择器
+  Widget _buildGenderSelector() {
+    return Row(
+      children: [
+        const Text(
+          '性别: ',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () async {
+              if (_isEditing) {
+                final selectedGender = await showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SimpleDialog(
+                      title: const Text('选择性别'),
+                      children: ['男', '女'].map((String gender) {
+                        return SimpleDialogOption(
+                          onPressed: () {
+                            Navigator.pop(context, gender);
+                          },
+                          child: Text(gender),
+                        );
+                      }).toList(),
+                    );
+                  },
+                );
+                if (selectedGender != null) {
+                  setState(() {
+                    _selectedGender = selectedGender;
+                  });
+                }
+              }
+            },
+            child: AbsorbPointer(
+              child: TextField(
+                controller: TextEditingController(text: _selectedGender),
+                enabled: _isEditing, // 始终禁用，点击通过 GestureDetector 控制
+                decoration: const InputDecoration(
+                  suffixIcon: Icon(Icons.arrow_drop_down),
+                ),
+              ),
             ),
-            // 保存按钮，保存编辑内容并关闭对话框
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _emailController.text = _editEmailController.text;
-                  _phoneController.text = _editPhoneController.text;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('保存'),
-            ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }
