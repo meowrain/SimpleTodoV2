@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:todo_app/api/auth/auth_database.dart';
+import 'package:todo_app/api/todo/todo_api.dart';
 import 'package:todo_app/api/user/user_info_database.dart';
 import 'package:todo_app/api/user/user_model.dart';
 import 'package:todo_app/config/config_init.dart';
@@ -43,6 +44,7 @@ Future<bool> login({String? username, String? password}) async {
     await authDatabase.storeLoggedStatus(true);
     //登录成功后，我们获取user的信息，执行其中的逻辑，包括更新本地sharedPreference
     await getUserInfo();
+    await fetchTodoListAPI();
     return true;
   } else {
     logger.e('Falied to login: ${response.body}');

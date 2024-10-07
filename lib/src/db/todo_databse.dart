@@ -1,4 +1,6 @@
 import 'package:isar/isar.dart';
+import 'package:todo_app/api/user/user_api.dart';
+
 import 'package:todo_app/src/models/todo/todo.dart';
 import 'package:todo_app/src/utils/initial_localdb.dart';
 
@@ -16,8 +18,21 @@ class TodoDatabse {
     });
   }
 
+  Future<void> DeleteAllTodo() async {
+    await _isar.writeTxn(() async {
+      await _isar.todos.clear();
+    });
+  }
+
+  Future<void> addAllTodo(List<Todo> tasks) async {
+    await _isar.writeTxn(() async {
+      await _isar.todos.putAll(tasks);
+    });
+  }
+
   //read
   Future<List<Todo>> fetchTodos() async {
+    logger.i("从本地数据库中提取todo");
     final List<Todo> fetchTodos = await _isar.todos.where().findAll();
     return fetchTodos;
   }

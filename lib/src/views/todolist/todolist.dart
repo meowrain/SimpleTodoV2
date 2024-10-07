@@ -15,6 +15,47 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   final TextEditingController _texteditingcontroller = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _loadTodos();
+  }
+
+  void _loadTodos() async {
+    await context.read<Todoprovider>().fetchTodoProvider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final todoProvider = context.watch<Todoprovider>();
+    List<Todo> currentTodos = todoProvider.currentTodos;
+
+    return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        floatingActionButton: FloatingActionButton(
+          onPressed: _createNewTask,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          shape: const CircleBorder(),
+          elevation: 5,
+          child:
+              Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
+        ),
+        body: ListView.builder(
+            itemCount: currentTodos.length,
+            itemBuilder: (context, index) {
+              return TodoTile(
+                taskName: currentTodos[index].task!,
+                taskCompleted: currentTodos[index].completed!,
+                onChanged: (bool? value) {
+                  _checkBoxChanged(value, currentTodos[index].id);
+                },
+                deleteTodoFromTodoList: (context) {
+                  _deleteFromTheTask(currentTodos[index].id);
+                },
+              );
+            }));
+  }
+
   void _checkBoxChanged(bool? value, int id) {
     setState(() {
       context.read<Todoprovider>().updateTodoProvider(id, null, value ?? false);
@@ -42,10 +83,6 @@ class _TodoListState extends State<TodoList> {
         );
       }
     });
-  }
-
-  void readTasksFromDatabase() {
-    context.watch<Todoprovider>().fetchTodoProvider();
   }
 
   void _createNewTask() {
@@ -83,36 +120,5 @@ class _TodoListState extends State<TodoList> {
         ),
       );
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final todoProvider = context.watch<Todoprovider>();
-    List<Todo> currentTodos = todoProvider.currentTodos;
-    todoProvider.fetchTodoProvider();
-    return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        floatingActionButton: FloatingActionButton(
-          onPressed: _createNewTask,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: const CircleBorder(),
-          elevation: 5,
-          child:
-              Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
-        ),
-        body: ListView.builder(
-            itemCount: currentTodos.length,
-            itemBuilder: (context, index) {
-              return TodoTile(
-                taskName: currentTodos[index].task!,
-                taskCompleted: currentTodos[index].completed!,
-                onChanged: (bool? value) {
-                  _checkBoxChanged(value, currentTodos[index].id);
-                },
-                deleteTodoFromTodoList: (context) {
-                  _deleteFromTheTask(currentTodos[index].id);
-                },
-              );
-            }));
   }
 }
