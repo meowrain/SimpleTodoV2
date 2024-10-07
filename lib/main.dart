@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:todo_app/config/config_init.dart';
+import 'package:todo_app/src/providers/authStatusProvider.dart';
 import 'package:todo_app/src/providers/todoProvider.dart';
 import 'package:todo_app/src/providers/userinfoProvider.dart';
 import 'package:todo_app/src/theme/theme_manager.dart';
@@ -27,7 +28,10 @@ void main() async {
       ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
       //提供UserInfoProvider实例
       ChangeNotifierProvider<UserInfoProvider>(
-          create: (_) => UserInfoProvider())
+          create: (_) => UserInfoProvider()),
+      //提供AuthStatusProvider实例
+      ChangeNotifierProvider<AuthStatusprovider>(
+          create: (_) => AuthStatusprovider())
     ],
     // TodoApp作为子部件
     child: const TodoApp(),

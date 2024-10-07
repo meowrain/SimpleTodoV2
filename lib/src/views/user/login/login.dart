@@ -30,8 +30,8 @@ class _UserLoginState extends State<UserLogin> {
           duration: Duration(seconds: 1),
         ),
       );
-      //TODO: 跳出路由
-      // Navigator.pop(context);
+      // 跳出当前路由
+      Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

@@ -14,4 +14,11 @@ class AuthStatusprovider with ChangeNotifier {
     isLoggedIn = await _authDatabase.isLoggedIn();
     notifyListeners();
   }
+
+  Future<void> logoutProvider() async {
+    await _authDatabase.logout();
+    token = "";
+    isLoggedIn = false;
+    notifyListeners();
+  }
 }

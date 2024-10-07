@@ -1,7 +1,11 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v0.2"></a>
+## [v0.2] - 2024-10-04
 ### Feat
+- 实现profile设置功能，匹配数据
 - 添加changelog
 
 
@@ -25,4 +29,5 @@
 - 使用flutter重构todoapp,本地存储功能完成
 
 
-[Unreleased]: https://github.com/meowrain/SimpleTodoV2/compare/v0.1...HEAD
+[Unreleased]: https://github.com/meowrain/SimpleTodoV2/compare/v0.2...HEAD
+[v0.2]: https://github.com/meowrain/SimpleTodoV2/compare/v0.1...v0.2
