@@ -25,6 +25,10 @@ class _TodoListState extends State<TodoList> {
     await context.read<Todoprovider>().fetchTodoProvider();
   }
 
+  Future<void> _refreshTodos() async {
+    await context.read<Todoprovider>().syncTodoListProvider();
+  }
+
   @override
   Widget build(BuildContext context) {
     final todoProvider = context.watch<Todoprovider>();
@@ -40,20 +44,23 @@ class _TodoListState extends State<TodoList> {
           child:
               Icon(Icons.add, color: Theme.of(context).colorScheme.onSecondary),
         ),
-        body: ListView.builder(
-            itemCount: currentTodos.length,
-            itemBuilder: (context, index) {
-              return TodoTile(
-                taskName: currentTodos[index].task!,
-                taskCompleted: currentTodos[index].completed!,
-                onChanged: (bool? value) {
-                  _checkBoxChanged(value, currentTodos[index].id);
-                },
-                deleteTodoFromTodoList: (context) {
-                  _deleteFromTheTask(currentTodos[index].id);
-                },
-              );
-            }));
+        body: RefreshIndicator(
+          onRefresh: _refreshTodos,
+          child: ListView.builder(
+              itemCount: currentTodos.length,
+              itemBuilder: (context, index) {
+                return TodoTile(
+                  taskName: currentTodos[index].task!,
+                  taskCompleted: currentTodos[index].completed!,
+                  onChanged: (bool? value) {
+                    _checkBoxChanged(value, currentTodos[index].id);
+                  },
+                  deleteTodoFromTodoList: (context) {
+                    _deleteFromTheTask(currentTodos[index].id);
+                  },
+                );
+              }),
+        ));
   }
 
   void _checkBoxChanged(bool? value, int id) {

@@ -8,6 +8,7 @@ import 'package:todo_app/src/db/todo_databse.dart';
 import 'package:todo_app/src/models/todo/todo.dart';
 import '../auth/auth_database.dart';
 
+//TODO: 添加未登录的提示
 var logger = Logger();
 
 Future<List<Todo>?> fetchTodoListAPI() async {
@@ -45,4 +46,34 @@ Future<List<Todo>?> fetchTodoListAPI() async {
     }
   }
   return [];
+}
+
+Future<bool> syncTodoListAPI({required List<ApiTodoModel> todoList}) async {
+  final ConfigModel config = ConfigManager().config;
+  final Uri apiUrl = Uri.parse("${config.apiUrl}/todos/all");
+  final authDatabase = AuthDatabase();
+  bool isLoggedIn = await authDatabase.isLoggedIn();
+  if (isLoggedIn) {
+    //如果已经登录，那么可以执行更新数据的操作
+    //构建请求头
+    Map<String, String> headers = <String, String>{};
+    headers['Content-Type'] = 'application/json';
+    headers['Authorization'] = (await authDatabase.getToken())!;
+
+    //构建请求体
+
+    final body = jsonEncode(todoList.map((todo) => todo.toJson()).toList());
+    //发送请求
+    final response = await http.put(apiUrl, headers: headers, body: body);
+    // 处理响应
+    if (response.statusCode == 200) {
+      // 更新成功
+      logger.i("更新todoList成功！");
+      return true;
+    } else {
+      logger.e("更新失败");
+      return false;
+    }
+  }
+  return false;
 }

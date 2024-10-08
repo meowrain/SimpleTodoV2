@@ -7,4 +7,5 @@ class Todo {
   Id id = Isar.autoIncrement;
   String? task;
   bool? completed;
+  String? tag;
 }

@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var _currentIndex = 0;
 
-  final List<dynamic> routes = const [TodoList(), UserLogin(), Settings()];
+  final List<dynamic> routes = const [TodoList(), Settings()];
   void _changeCurrentIndex(int index) {
     setState(() {
       _currentIndex = index;
@@ -39,11 +39,8 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.supervised_user_circle), label: "User"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: "Settings"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "主页"),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "设置"),
         ],
         currentIndex: _currentIndex,
         onTap: _changeCurrentIndex,
