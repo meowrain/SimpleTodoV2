@@ -12,39 +12,6 @@ class UserRegister extends StatefulWidget {
 class _UserRegisterState extends State<UserRegister> {
   final TextEditingController _username_controller = TextEditingController();
   final TextEditingController _password_controller = TextEditingController();
-  void _registerhandler() async {
-    bool isSuccess = await register(
-        username: _username_controller.text,
-        password: _password_controller.text);
-    if (isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "注册成功！",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 1),
-        ),
-      );
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "注册失败",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 1),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,5 +113,39 @@ class _UserRegisterState extends State<UserRegister> {
     _username_controller.dispose();
     _password_controller.dispose();
     super.dispose();
+  }
+
+  void _registerhandler() async {
+    bool isSuccess = await register(
+        username: _username_controller.text,
+        password: _password_controller.text);
+    if (isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "注册成功！",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "注册失败",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
   }
 }

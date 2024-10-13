@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/api/user/user_model.dart';
 import 'package:todo_app/src/providers/userinfoProvider.dart';
 
 class PersonalPageDemo extends StatefulWidget {
@@ -13,36 +17,19 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController(text: "*************");
   final TextEditingController _birthdayController = TextEditingController();
   String? _selectedGender;
   bool _isEditing = false; // 控制是否处于编辑模式
+  String? _avatar = "";
+  String? _bio = "";
+
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
     _loadUserInfo();
-  }
-
-  void _loadUserInfo() async {
-    final userInfoProvider =
-        Provider.of<UserInfoProvider>(context, listen: false);
-    await userInfoProvider.fetchUserInfoProvider();
-    setState(() {
-      _emailController.text = userInfoProvider.userInfo!.email;
-      _phoneController.text = userInfoProvider.userInfo!.phoneNumber;
-      _usernameController.text = userInfoProvider.userInfo!.username;
-      _birthdayController.text = userInfoProvider.userInfo!.birthday;
-      _selectedGender = userInfoProvider.userInfo!.gender;
-    });
-  }
-
-  void _saveUserInfo() {
-    //数据库操作
-
-    setState(() {
-      _isEditing = false;
-    });
   }
 
   @override
@@ -62,9 +49,12 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
           child: Center(
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(avatar),
+                GestureDetector(
+                  onTap: pickImage,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(avatar),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -81,11 +71,6 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
                 const SizedBox(height: 20),
                 _buildTextInputField(
                     label: "用户名:", controller: _usernameController),
-                const SizedBox(height: 10),
-                _buildTextInputField(
-                    label: "密码:",
-                    controller: _passwordController,
-                    isPassword: true),
                 const SizedBox(height: 10),
                 _buildTextInputField(
                     label: "邮箱:", controller: _emailController),
@@ -197,5 +182,125 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
         ),
       ],
     );
+  }
+
+  void _loadUserInfo() async {
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    await userInfoProvider.fetchUserInfoProvider();
+    setState(() {
+      _avatar = userInfoProvider.userInfo!.avatar;
+      _bio = userInfoProvider.userInfo!.bio;
+      _emailController.text = userInfoProvider.userInfo!.email;
+      _phoneController.text = userInfoProvider.userInfo!.phoneNumber;
+      _usernameController.text = userInfoProvider.userInfo!.username;
+      _birthdayController.text = userInfoProvider.userInfo!.birthday;
+      _selectedGender = userInfoProvider.userInfo!.gender;
+    });
+  }
+
+  void _saveUserInfo() async {
+    //数据库操作
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    final userInfo = userInfoProvider.userInfo!;
+    ApiUserModel updatedUser = ApiUserModel(
+        id: userInfo.id,
+        username: _usernameController.text,
+        avatar: _avatar!,
+        bio: _bio!,
+        email: _emailController.text,
+        phoneNumber: _phoneController.text,
+        gender: _selectedGender!,
+        birthday: _birthdayController.text);
+    bool isSuccess = await userInfoProvider.saveUserInfoProvider(updatedUser);
+    if (isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "更新用户数据成功！",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "更新用户失败！",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
+
+    setState(() {
+      _isEditing = false;
+    });
+  }
+
+// 选择图片
+  Future<void> pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      var isSuccess = await uploadImage();
+      if (isSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "上传头像成功！",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // 成功信息文字显示为白色
+              ),
+            ),
+            backgroundColor: Colors.green, // 成功信息背景显示为绿色
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 1),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "上传头像失败！",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // 成功信息文字显示为白色
+              ),
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<bool> uploadImage() async {
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    if (_image != null) {
+      bool res = await userInfoProvider.updateUserAvatar(_image);
+      if (res) {
+        //成功
+        return true;
+      }
+      //失败
+    }
+    //失败
+    return false;
   }
 }

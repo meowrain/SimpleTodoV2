@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:todo_app/api/auth/auth_database.dart';
 import 'package:todo_app/api/todo/todo_api.dart';
@@ -33,7 +34,7 @@ Future<bool> login({String? username, String? password}) async {
 
   //检查响应状态
   if (response.statusCode == 200) {
-    logger.i('Login Successful: ${response.body}');
+    logger.i('登录成功: ${response.body}');
     // 解析 JSON
     Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
@@ -47,7 +48,7 @@ Future<bool> login({String? username, String? password}) async {
     await fetchTodoListAPI();
     return true;
   } else {
-    logger.e('Falied to login: ${response.body}');
+    logger.e('登录失败： ${response.body}');
     return false;
   }
 }
@@ -63,10 +64,10 @@ Future<bool> register({String? username, String? password}) async {
 
   final response = await http.post(apiUrl, headers: header, body: body);
   if (response.statusCode == 200) {
-    logger.i('Register Successful: ${response.body}');
+    logger.i('注册成功: ${response.body}');
     return true;
   } else {
-    logger.e('Failed to register: ${response.body}');
+    logger.e('注册失败: ${response.body}');
     return false;
   }
 }
@@ -88,15 +89,74 @@ Future<ApiUserModel?> getUserInfo() async {
     ApiUserModel? user = ApiUserModel.fromJson(json_responseBody['data']);
 
     if (response.statusCode == 200) {
-      logger.i('Get User Info Successful: ${user}');
+      logger.i('获取用户信息成功： ${user}');
       //获取一次就更新一次user的相关字段
       await userInfoDatabase.saveUserInfo(user);
       return user;
     } else {
-      logger.e('Get User Info failed: ${response.body}');
+      logger.e('获取用户信息失败: ${response.body}');
       return null;
     }
   } else {
     return null;
   }
+}
+
+Future<bool> uploadAvatar(File imageFile) async {
+  final authDatabase = AuthDatabase();
+  bool isLoggedIn = await authDatabase.isLoggedIn();
+
+  if (isLoggedIn) {
+    final ConfigModel config = ConfigManager().config;
+    final apiUrl = Uri.parse('${config.apiUrl}/users/upload_avatar');
+
+    // 获取 Authorization 头
+    Map<String, String> headers = <String, String>{
+      'Authorization': (await authDatabase.getToken())!,
+    };
+
+    // 创建 multipart 请求
+    var request = http.MultipartRequest('POST', apiUrl)
+      ..headers.addAll(headers)
+      // 使用 `imageFile.path` 获取文件路径
+      ..files.add(await http.MultipartFile.fromPath('avatar', imageFile.path));
+
+    // 发送请求
+    final response = await request.send();
+
+    // 检查状态码
+    if (response.statusCode == 200) {
+      logger.i('Avatar upload successful');
+      return true;
+    } else {
+      // 读取失败的详细信息
+      final responseBody = await response.stream.bytesToString();
+      logger.e(
+          'Failed to upload avatar: ${response.reasonPhrase}, Body: $responseBody');
+    }
+  }
+
+  return false;
+}
+
+Future<bool> updateUserInfo(ApiUserModel usermodel) async {
+  final AuthDatabase authDatabase = AuthDatabase();
+  bool isLoggedIn = await authDatabase.isLoggedIn();
+  if (isLoggedIn) {
+    final ConfigModel config = ConfigManager().config;
+    final Uri apiUri = Uri.parse('${config.apiUrl}/users/update');
+    Map<String, String> headers = <String, String>{
+      'Authorization': (await authDatabase.getToken())!
+    };
+
+    String body = json.encode(usermodel);
+    final response = await http.put(apiUri, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      logger.i('更新用户信息成功');
+      return true;
+    } else {
+      logger.e('用户信息更新失败');
+    }
+  }
+  return false;
 }

@@ -13,40 +13,6 @@ class UserLogin extends StatefulWidget {
 class _UserLoginState extends State<UserLogin> {
   final TextEditingController _username_controller = TextEditingController();
   final TextEditingController _password_controller = TextEditingController();
-  void _loginHandler() async {
-    bool isSuccess = await login(
-        username: _username_controller.text,
-        password: _password_controller.text);
-    if (isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "登录成功！",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 1),
-        ),
-      );
-      // 跳出当前路由
-      Navigator.pop(context, true);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "登录失败",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 1),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,5 +126,40 @@ class _UserLoginState extends State<UserLogin> {
     _username_controller.dispose();
     _password_controller.dispose();
     super.dispose();
+  }
+
+  void _loginHandler() async {
+    bool isSuccess = await login(
+        username: _username_controller.text,
+        password: _password_controller.text);
+    if (isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "登录成功！",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+      // 跳出当前路由
+      Navigator.pop(context, true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "登录失败",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
   }
 }
