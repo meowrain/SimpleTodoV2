@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/src/components/dialog_box.dart';
 import 'package:todo_app/src/models/todo/todo.dart';
+import 'package:todo_app/src/providers/authStatusProvider.dart';
 import 'package:todo_app/src/providers/todoProvider.dart';
 import 'package:todo_app/src/views/todotile/todotile.dart';
 
@@ -26,16 +27,30 @@ class _TodoListState extends State<TodoList> {
   }
 
   Future<void> _refreshTodos() async {
-    await context.read<Todoprovider>().syncTodoListProvider();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text(
-        "同步成功！",
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 1),
-      backgroundColor: Colors.green,
-    ));
+    final AuthStatusprovider authStatusprovider =
+        Provider.of<AuthStatusprovider>(context, listen: false);
+    if (authStatusprovider.isLoggedIn) {
+      await context.read<Todoprovider>().syncTodoListProvider();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          "同步成功！",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 1),
+        backgroundColor: Colors.green,
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+          "请先登录再使用同步功能",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 1),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   @override
