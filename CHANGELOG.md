@@ -2,6 +2,20 @@
 ## [Unreleased]
 
 
+<a name="v0.3"></a>
+## [v0.3] - 2024-10-13
+### Feat
+- 首页刷新todo成功会提示刷新成功
+- 对接用户信息更新接口和头像上传接口成功！
+- 实现下拉刷新和Todo列表同步功能
+- 实现登录获取todo list
+- 登出功能完善
+
+### Fix
+- 修复不登陆还显示同步成功的提示
+- 修复打包好的app没有网络的问题
+
+
 <a name="v0.2"></a>
 ## [v0.2] - 2024-10-04
 ### Feat
@@ -29,5 +43,6 @@
 - 使用flutter重构todoapp,本地存储功能完成
 
 
-[Unreleased]: https://github.com/meowrain/SimpleTodoV2/compare/v0.2...HEAD
+[Unreleased]: https://github.com/meowrain/SimpleTodoV2/compare/v0.3...HEAD
+[v0.3]: https://github.com/meowrain/SimpleTodoV2/compare/v0.2...v0.3
 [v0.2]: https://github.com/meowrain/SimpleTodoV2/compare/v0.1...v0.2
