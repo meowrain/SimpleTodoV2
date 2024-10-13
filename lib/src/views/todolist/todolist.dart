@@ -26,8 +26,16 @@ class _TodoListState extends State<TodoList> {
   }
 
   Future<void> _refreshTodos() async {
-    //TODO: 刷新成功提示刷新成功
     await context.read<Todoprovider>().syncTodoListProvider();
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text(
+        "同步成功！",
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 1),
+      backgroundColor: Colors.green,
+    ));
   }
 
   @override
