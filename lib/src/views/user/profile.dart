@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/api/user/user_api.dart';
 import 'package:todo_app/api/user/user_model.dart';
 import 'package:todo_app/src/providers/userinfoProvider.dart';
 
@@ -18,10 +19,11 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _birthdayController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   String? _selectedGender;
   bool _isEditing = false; // 控制是否处于编辑模式
   String? _avatar = "";
-  String? _bio = "";
 
   File? _image;
   final ImagePicker _picker = ImagePicker();
@@ -73,7 +75,15 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
                     label: "用户名:", controller: _usernameController),
                 const SizedBox(height: 10),
                 _buildTextInputField(
+                  label: "新密码:",
+                  controller: _passwordController,
+                  isPassword: true,
+                ),
+                const SizedBox(height: 10,),
+                _buildTextInputField(
                     label: "邮箱:", controller: _emailController),
+                const SizedBox(height: 10,),
+                _buildTextInputField(label: "个性签名:", controller: _bioController),
                 const SizedBox(height: 10),
                 _buildGenderSelector(),
                 const SizedBox(
@@ -190,11 +200,12 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
     await userInfoProvider.fetchUserInfoProvider();
     setState(() {
       _avatar = userInfoProvider.userInfo!.avatar;
-      _bio = userInfoProvider.userInfo!.bio;
+      _bioController.text = userInfoProvider.userInfo!.bio;
       _emailController.text = userInfoProvider.userInfo!.email;
       _phoneController.text = userInfoProvider.userInfo!.phoneNumber;
       _usernameController.text = userInfoProvider.userInfo!.username;
       _birthdayController.text = userInfoProvider.userInfo!.birthday;
+      _passwordController.text = "";
       _selectedGender = userInfoProvider.userInfo!.gender;
     });
   }
@@ -208,12 +219,49 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
         id: userInfo.id,
         username: _usernameController.text,
         avatar: _avatar!,
-        bio: _bio!,
+        bio: _bioController.text,
         email: _emailController.text,
         phoneNumber: _phoneController.text,
         gender: _selectedGender!,
         birthday: _birthdayController.text);
+
+    //更新密码逻辑
+    bool isPasswordUpdated = false;
+    if (_passwordController.text.isNotEmpty) {
+      // 如果密码非空，那表示要更新密码
+       isPasswordUpdated = await updateUserPassword(_passwordController.text);
+       if(isPasswordUpdated) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(
+             content: Text(
+               "更新密码成功！",
+               style: TextStyle(
+                 fontWeight: FontWeight.bold,
+               ),
+             ),
+             behavior: SnackBarBehavior.floating,
+             duration: Duration(seconds: 1),
+             backgroundColor: Colors.green,
+           ),
+         );
+       }else {
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(
+             content: Text(
+               "更新密码失败！",
+               style: TextStyle(
+                 fontWeight: FontWeight.bold,
+               ),
+             ),
+             behavior: SnackBarBehavior.floating,
+             duration: Duration(seconds: 1),
+             backgroundColor: Colors.red,
+           ),
+         );
+       }
+    }
     bool isSuccess = await userInfoProvider.saveUserInfoProvider(updatedUser);
+
     if (isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -225,6 +273,7 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
           ),
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 1),
+          backgroundColor: Colors.green,
         ),
       );
     } else {
@@ -238,6 +287,7 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
           ),
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 1),
+          backgroundColor: Colors.red,
         ),
       );
     }
@@ -303,4 +353,6 @@ class _PersonalPageDemoState extends State<PersonalPageDemo> {
     //失败
     return false;
   }
+
+
 }

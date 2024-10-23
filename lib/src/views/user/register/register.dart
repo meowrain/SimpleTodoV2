@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/api/user/user_api.dart';
+import 'package:todo_app/src/views/user/login/login.dart';
 
 class UserRegister extends StatefulWidget {
   const UserRegister({super.key});
@@ -71,12 +72,20 @@ class _UserRegisterState extends State<UserRegister> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text("登录"),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const UserLogin()));
+                        },
+                        child: const Text("登录"),
+                      )
                     ],
                   ),
                 ),
