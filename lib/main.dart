@@ -51,8 +51,8 @@ class TodoApp extends StatelessWidget {
             // 禁用调试模式下的检查模式横幅
             debugShowCheckedModeBanner: false,
             home: const HomePage(),
-            theme: ThemeManager.LightTheme.midnight,
-            darkTheme: ThemeManager.DarkTheme.midnight,
+            theme: themeProvider.themeData[0],
+            darkTheme: themeProvider.themeData[1],
             themeMode: themeProvider.themeMode,
           );
         },

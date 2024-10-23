@@ -17,8 +17,13 @@ const ThemeSchema = CollectionSchema(
   name: r'Theme',
   id: 265716503294065488,
   properties: {
-    r'themeMode': PropertySchema(
+    r'theme': PropertySchema(
       id: 0,
+      name: r'theme',
+      type: IsarType.string,
+    ),
+    r'themeMode': PropertySchema(
+      id: 1,
       name: r'themeMode',
       type: IsarType.string,
     )
@@ -44,6 +49,12 @@ int _themeEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.theme;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.themeMode;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -58,7 +69,8 @@ void _themeSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.themeMode);
+  writer.writeString(offsets[0], object.theme);
+  writer.writeString(offsets[1], object.themeMode);
 }
 
 Theme _themeDeserialize(
@@ -69,7 +81,8 @@ Theme _themeDeserialize(
 ) {
   final object = Theme();
   object.id = id;
-  object.themeMode = reader.readStringOrNull(offsets[0]);
+  object.theme = reader.readStringOrNull(offsets[0]);
+  object.themeMode = reader.readStringOrNull(offsets[1]);
   return object;
 }
 
@@ -81,6 +94,8 @@ P _themeDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readStringOrNull(offset)) as P;
+    case 1:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -223,6 +238,150 @@ extension ThemeQueryFilter on QueryBuilder<Theme, Theme, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'theme',
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'theme',
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'theme',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'theme',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'theme',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'theme',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'theme',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'theme',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeContains(String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'theme',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'theme',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'theme',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterFilterCondition> themeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'theme',
+        value: '',
       ));
     });
   }
@@ -379,6 +538,18 @@ extension ThemeQueryObject on QueryBuilder<Theme, Theme, QFilterCondition> {}
 extension ThemeQueryLinks on QueryBuilder<Theme, Theme, QFilterCondition> {}
 
 extension ThemeQuerySortBy on QueryBuilder<Theme, Theme, QSortBy> {
+  QueryBuilder<Theme, Theme, QAfterSortBy> sortByTheme() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'theme', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterSortBy> sortByThemeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'theme', Sort.desc);
+    });
+  }
+
   QueryBuilder<Theme, Theme, QAfterSortBy> sortByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -405,6 +576,18 @@ extension ThemeQuerySortThenBy on QueryBuilder<Theme, Theme, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Theme, Theme, QAfterSortBy> thenByTheme() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'theme', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Theme, Theme, QAfterSortBy> thenByThemeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'theme', Sort.desc);
+    });
+  }
+
   QueryBuilder<Theme, Theme, QAfterSortBy> thenByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -419,6 +602,13 @@ extension ThemeQuerySortThenBy on QueryBuilder<Theme, Theme, QSortThenBy> {
 }
 
 extension ThemeQueryWhereDistinct on QueryBuilder<Theme, Theme, QDistinct> {
+  QueryBuilder<Theme, Theme, QDistinct> distinctByTheme(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'theme', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Theme, Theme, QDistinct> distinctByThemeMode(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -431,6 +621,12 @@ extension ThemeQueryProperty on QueryBuilder<Theme, Theme, QQueryProperty> {
   QueryBuilder<Theme, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Theme, String?, QQueryOperations> themeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'theme');
     });
   }
 

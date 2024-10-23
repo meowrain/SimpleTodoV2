@@ -6,4 +6,5 @@ part 'theme.g.dart';
 class Theme {
   Id id = Isar.autoIncrement;
   String? themeMode;
+  String? theme;
 }

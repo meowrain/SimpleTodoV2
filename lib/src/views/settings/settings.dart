@@ -18,6 +18,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool _notificationsEnabled = true;
+  final List<String> _themes = ['midnight','greens','blue_delight','indigo_nights','material_default','material_high_contract','red_and_blue'];
   // 每次打开的时候调用一次，更新userInfoProvider全局状态
   @override
   void initState() {
@@ -128,9 +129,15 @@ class _SettingsState extends State<Settings> {
             value: themeProvider.isDarkMode(context),
             onChanged: (bool value) {
               setState(() {
-                themeProvider.toggleTheme(value, context);
+                themeProvider.toggleTheme(value);
               });
             },
+          ),
+          ListTile(
+            leading: const Icon(FluentIcons.dark_theme_24_regular),
+            title: const Text('选择主题'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _showThemeDialog(context, themeProvider), // 显示主题选择对话框
           ),
           ListTile(
             leading: const Icon(FluentIcons.info_24_regular),
@@ -187,6 +194,30 @@ class _SettingsState extends State<Settings> {
         behavior: SnackBarBehavior.floating,
         duration: Duration(seconds: 1),
       ),
+    );
+  }
+
+  //更换主题
+  void _showThemeDialog(BuildContext context, ThemeProvider themeProvider) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('选择主题'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _themes.map((themeName) {
+              return ListTile(
+                title: Text(themeName),
+                onTap: () {
+                  themeProvider.changeTheme(themeName, context); // 更改主题
+                  Navigator.pop(context); // 关闭对话框
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
   }
 }
