@@ -14,7 +14,7 @@ class Themedatabase {
     });
   }
 
-  Future<String?> fetchThemeFromDB() async {
+  Future<String?> fetchThemeModeFromDB() async {
     final theme = await _isar.themes.get(0);
     return theme?.themeMode;
   }

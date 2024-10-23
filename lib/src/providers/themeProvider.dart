@@ -9,7 +9,7 @@ class ThemeProvider with ChangeNotifier {
     _loadThemeFromDatabase();
   }
   Future<void> _loadThemeFromDatabase() async {
-    String? themeFromDatabase = await _themedatabase.fetchThemeFromDB();
+    String? themeFromDatabase = await _themedatabase.fetchThemeModeFromDB();
     if (themeFromDatabase != null) {
       _themeMode =
           themeFromDatabase == 'dark' ? ThemeMode.dark : ThemeMode.light;
