@@ -38,7 +38,7 @@ class ThemeProvider with ChangeNotifier {
   // 切换主题模式
   void toggleTheme(bool isOn) async {
     _themeMode = isOn ? ThemeMode.dark : ThemeMode.light;
-    await _themedatabase.saveThemeDB(_theme, isOn ? 'dark' : 'light');
+    await _themedatabase.saveThemeDB(isOn ? 'dark' : 'light', theme);
     notifyListeners();
   }
 
@@ -46,7 +46,7 @@ class ThemeProvider with ChangeNotifier {
   void changeTheme(String themeName, BuildContext context) async {
     if (_theme != themeName) {
       _theme = themeName;
-      await _themedatabase.saveThemeDB(isDarkMode(context) ? 'dark' : 'light', themeName);
+      await _themedatabase.saveThemeDB(isDarkMode(context) ? 'dark' : 'light', theme);
       notifyListeners();
     }
   }
