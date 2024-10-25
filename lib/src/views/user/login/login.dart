@@ -88,7 +88,7 @@ class _UserLoginState extends State<UserLogin> {
                       const SizedBox(
                         width: 10,
                       ),
-                      const Text("忘记密码？"),
+                      // const Text("忘记密码？"),
                     ],
                   ),
                 ),
