@@ -113,7 +113,7 @@ class _SettingsState extends State<Settings> {
                       builder: (context) => const PrivacyPolicyPage()));
             },
           ),
-          SwitchListTile(
+          /*SwitchListTile(
             secondary: const Icon(FluentIcons.alert_24_regular),
             title: const Text('通知'),
             value: _notificationsEnabled,
@@ -122,7 +122,7 @@ class _SettingsState extends State<Settings> {
                 _notificationsEnabled = value;
               });
             },
-          ),
+          ),*/
           SwitchListTile(
             secondary: const Icon(FluentIcons.dark_theme_24_regular),
             title: const Text('夜间模式'),
